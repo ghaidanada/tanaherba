@@ -3,8 +3,8 @@ from streamlit_option_menu import option_menu
 import os
 from dotenv import load_dotenv
 import beranda
-import klasifikasi as klasifikasi
-import tentang as tentang
+import klasifikasi
+import tentang
 
 # Set the page configuration
 st.set_page_config(
