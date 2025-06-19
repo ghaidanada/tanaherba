@@ -1,11 +1,10 @@
 streamlit
 streamlit-option-menu
-tensorflow==2.12.0
+python-dotenv
 numpy
 pandas
-matplotlib
 scikit-learn
-torch
-torchvision
-python-dotenv
-Pillow
+matplotlib
+tensorflow==2.11.0
+torch==2.0.1
+torchvision==0.15.2
