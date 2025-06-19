@@ -1,6 +1,10 @@
 streamlit
-streamlit-option-menu
-tensorflow
-numpy
-Pillow
+streamlit_option_menu
 python-dotenv
+numpy
+pandas
+scikit-learn
+matplotlib
+torch
+torchvision
+tensorflow
