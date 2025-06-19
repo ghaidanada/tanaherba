@@ -1,0 +1,6 @@
+streamlit
+streamlit-option-menu
+tensorflow
+numpy
+Pillow
+python-dotenv
