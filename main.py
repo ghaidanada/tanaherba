@@ -6,6 +6,13 @@ import beranda
 import klasifikasi
 import tentang
 
+import streamlit as st
+import sys
+
+st.write("🔍 Python version in this environment:")
+st.write(sys.version)
+
+
 # Set the page configuration
 st.set_page_config(
     page_title="TanaHerba",
