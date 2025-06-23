@@ -123,3 +123,24 @@ def app():
             st.image(image, caption='Gambar Tanaman Herbal', use_container_width=True)
             st.write("Tanaman Herbal Rimpang Jenis:", f"**{predicted_class}**")
             st.write(f"Probabilitas tertinggi: **{predicted_prob:.4f}**")
+
+    # Tombol kembali ke Beranda
+    st.markdown("""
+        <style>
+        div.stButton > button {
+            background-color: #4863A0;
+            color: white;
+            border-radius: 8px;
+            padding: 0.5em 1.5em;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-left: 100px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    col_btn = st.columns(3)
+    with col_btn[1]:
+        if st.button("🔙 Kembali ke Beranda"):
+            st.session_state.menu = "Beranda"
+            st.rerun()
