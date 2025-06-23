@@ -94,8 +94,6 @@ class MultiApp:
         # Routing halaman
         if st.session_state.menu == "Beranda":
             beranda.app()
-        elif st.session_state.menu == "Klasifikasi Tanaman":
-            klasifikasi.app()
         elif st.session_state.menu == "Tentang Tanaman":
             tentang.app()
 
