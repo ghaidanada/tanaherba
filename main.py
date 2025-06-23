@@ -6,21 +6,22 @@ import beranda
 import klasifikasi
 import tentang
 
-# Set the page configuration
+# Set konfigurasi halaman
 st.set_page_config(
     page_title="TanaHerba",
     layout="wide",
     page_icon="🌿"
 )
 
-# Load environment variables
+# Load .env
 load_dotenv()
 
-# Google Analytics
+# Ambil Google Analytics Tag dari .env
 analytics_tag = os.getenv('analytics_tag')
 if analytics_tag:
     st.markdown(
         f"""
+        <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id={analytics_tag}"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
@@ -32,63 +33,61 @@ if analytics_tag:
         unsafe_allow_html=True
     )
 
-# Inisialisasi menu
+# Inisialisasi menu state
 if "menu" not in st.session_state:
     st.session_state.menu = "Beranda"
 
+# Class MultiApp
 class MultiApp:
     def __init__(self):
         self.apps = []
 
     def add_app(self, title, func):
-        self.apps.append({"title": title, "function": func})
+        self.apps.append({
+            "title": title,
+            "function": func
+        })
 
     def run(self):
-        with st.sidebar:
-            st.sidebar.markdown(
-                '<h2 style="text-align: center; font-size: 28px;">TanaHerba</h2>',
-                unsafe_allow_html=True
-            )
-            
-            menu_list = ['Beranda', 'Tentang Tanaman']
-            
-            # Cegah error jika menu bukan dari navbar
-            if st.session_state.menu in menu_list:
-                default_idx = menu_list.index(st.session_state.menu)
-            else:
-                default_idx = 0  # default ke Beranda kalau bukan dari navbar
-            
-            app = option_menu(
-                menu_title='',
-                options=menu_list,
-                icons=['house-fill', 'info-circle-fill'],
-                menu_icon='list',
-                default_index=default_idx,
-                styles={
-                    "container": {"padding": "5!important", "background-color": "#98AFC7"},
-                    "icon": {"color": "white", "font-size": "23px"},
-                    "nav-link": {
-                        "color": "white", "font-size": "20px", "text-align": "left",
-                        "--hover-color": "#4863A0", "padding": "10px 15px", "border-radius": "8px"
-                    },
-                    "nav-link-selected": {
-                        "background-color": "#4863A0", "color": "#fff", "font-weight": "bold",
-                        "border": "2px solid #2F539B", "box-shadow": "0 0 10px rgba(2,142,41,0.3)",
-                        "border-radius": "8px"
+        if st.session_state.menu != "Klasifikasi Tanaman":
+            with st.sidebar:
+                st.sidebar.markdown(
+                    '<h2 style="text-align: center; font-size: 28px;">TanaHerba</h2>',
+                    unsafe_allow_html=True
+                )
+                app = option_menu(
+                    menu_title='',
+                    options=['Beranda', 'Tentang Tanaman'],
+                    icons=['house-fill', 'info-circle-fill'],
+                    menu_icon='list',
+                    default_index=['Beranda', 'Tentang Tanaman'].index(st.session_state.menu),
+                    styles={
+                        "container": {"padding": "5!important", "background-color": "#98AFC7"},
+                        "icon": {"color": "white", "font-size": "23px"},
+                        "nav-link": {
+                            "color": "white", "font-size": "20px", "text-align": "left",
+                            "margin": "0px", "--hover-color": "#4863A0",
+                            "padding": "10px 15px", "border-radius": "8px"
+                        },
+                        "nav-link-selected": {
+                            "background-color": "#4863A0", "color": "#ffffff",
+                            "font-weight": "bold", "border": "2px solid #2F539B",
+                            "box-shadow": "0 0 10px rgba(2, 142, 41, 0.3)",
+                            "border-radius": "8px"
+                        }
                     }
-                }
-            )
-            st.session_state.menu = app
+                )
+                st.session_state.menu = app  # Update menu state sesuai pilihan
 
         # Routing halaman
         if st.session_state.menu == "Beranda":
             beranda.app()
         elif st.session_state.menu == "Tentang Tanaman":
             tentang.app()
-        elif st.session_state.menu == "Klasifikasi":
+        elif st.session_state.menu == "Klasifikasi Tanaman":
             klasifikasi.app()
 
-# Main function
+# Fungsi main
 def main():
     app = MultiApp()
     app.run()
