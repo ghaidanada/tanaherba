@@ -1,75 +1,76 @@
 import streamlit as st
-from streamlit_option_menu import option_menu
 import os
-from dotenv import load_dotenv
-import beranda
-import klasifikasi
-import tentang
+import base64
 
-# Set konfigurasi halaman
-st.set_page_config(page_title="TanaHerba", layout="wide", page_icon="🌿")
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
 
-# Load environment variable
-load_dotenv()
-analytics_tag = os.getenv('analytics_tag')
-if analytics_tag:
-    st.markdown(f"""
-    <script async src="https://www.googletagmanager.com/gtag/js?id={analytics_tag}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){{dataLayer.push(arguments);}}
-        gtag('js', new Date());
-        gtag('config', '{analytics_tag}');
-    </script>
+def app():
+    logo_path = "tanaherba.png"
+
+    # Header dengan logo dan judul (TIDAK DIUBAH)
+    if os.path.exists(logo_path):
+        logo_base64 = get_base64_of_bin_file(logo_path)
+        st.markdown(f'''
+            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                <div style="width: 35px; height: 35px; border-radius: 50%; overflow: hidden; margin-right: 5px; margin-top: 30px;">
+                    <img src="data:image/png;base64,{logo_base64}" style="width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+                <h1 style="color: #C19A6B; font-size: 16px; margin: 0; margin-top: 20px;">TanaHerba</h1>
+            </div>
+        ''', unsafe_allow_html=True)
+    else:
+        st.title("TanaHerba")
+
+    # CSS styling tombol dan responsif terhadap dark/light mode
+    st.markdown('''
+        <style>
+            .centered-section {
+                text-align: center;
+                max-width: 700px;
+                margin: auto;
+            }
+
+            .stButton > button {
+                background-color: #4863A0;
+                color: white;
+                border-radius: 8px;
+                padding: 0.5em 1.5em;
+                font-size: 16px;
+                margin-top: 10px;
+                margin-left: 300px;
+            }
+
+            /* Mode terang */
+            @media (prefers-color-scheme: light) {
+                .block-container {
+                    background-color: rgba(255, 255, 255, 0.95);
+                    color: black;
+                }
+            }
+
+            /* Mode gelap */
+            @media (prefers-color-scheme: dark) {
+                .block-container {
+                    background-color: rgba(30, 30, 30, 0.95);
+                    color: white;
+                }
+            }
+        </style>
+    ''', unsafe_allow_html=True)
+
+    # Konten utama (TIDAK DIUBAH)
+    st.markdown("""
+        <div class="block-container centered-section" style="margin-top: -40px;">
+            <h2>Selamat datang di <b>TanaHerba</b> 🌱</h2>
+        </div>
     """, unsafe_allow_html=True)
 
-# Inisialisasi session_state
-if "menu" not in st.session_state:
-    st.session_state.menu = "Beranda"
-
-# Class MultiApp
-class MultiApp:
-    def __init__(self):
-        self.apps = []
-
-    def add_app(self, title, func):
-        self.apps.append({"title": title, "function": func})
-
-    def run(self):
-        with st.sidebar:
-            st.sidebar.markdown('<h2 style="text-align: center; font-size: 28px;">TanaHerba</h2>', unsafe_allow_html=True)
-            menu_list = ['Beranda', 'Tentang Tanaman']
-            default_idx = menu_list.index(st.session_state.menu) if st.session_state.menu in menu_list else 0
-
-            app = option_menu(
-                menu_title='',
-                options=menu_list,
-                icons=['house-fill', 'info-circle-fill'],
-                menu_icon='list',
-                default_index=default_idx,
-                styles={
-                    "container": {"padding": "5!important", "background-color": "#98AFC7"},
-                    "icon": {"color": "white", "font-size": "23px"},
-                    "nav-link": {"color": "white", "font-size": "20px", "text-align": "left",
-                                  "--hover-color": "#4863A0", "padding": "10px 15px", "border-radius": "8px"},
-                    "nav-link-selected": {"background-color": "#4863A0", "color": "#fff", "font-weight": "bold",
-                                          "border": "2px solid #2F539B", "box-shadow": "0 0 10px rgba(2,142,41,0.3)",
-                                          "border-radius": "8px"}
-                }
-            )
-
-            if app:
-                st.session_state.menu = app
-
-        # Routing ke halaman
-        if st.session_state.menu == "Beranda":
-            beranda.app()
-        elif st.session_state.menu == "Tentang Tanaman":
-            tentang.app()
-        elif st.session_state.menu == "Klasifikasi":
-            klasifikasi.app()
-
-# Fungsi main
-if __name__ == "__main__":
-    app = MultiApp()
-    app.run()
+    # Tombol navigasi ke klasifikasi di tengah halaman
+    st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
+    if st.button("🔍 Mulai Klasifikasi Tanaman"):
+        st.session_state.menu = "Klasifikasi Tanaman"
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
