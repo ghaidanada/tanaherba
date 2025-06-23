@@ -60,7 +60,7 @@ class MultiApp:
                 options=['Beranda', 'Tentang Tanaman'],
                 icons=['house-fill', 'info-circle-fill'],
                 menu_icon='list',
-                default_index=['Beranda',  'Tentang Tanaman'].index(st.session_state.menu),
+                default_index=['Beranda', 'kasifikasi', 'Tentang Tanaman'].index(st.session_state.menu),
                 styles={
                     "container": {
                         "padding": "5!important",
