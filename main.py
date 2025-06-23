@@ -57,10 +57,10 @@ class MultiApp:
             )
             app = option_menu(
                 menu_title='',
-                options=['Beranda', 'Klasifikasi Tanaman', 'Tentang Tanaman'],
-                icons=['house-fill', 'graph-up', 'info-circle-fill'],
+                options=['Beranda', 'Tentang Tanaman'],
+                icons=['house-fill', 'info-circle-fill'],
                 menu_icon='list',
-                default_index=['Beranda', 'Klasifikasi Tanaman', 'Tentang Tanaman'].index(st.session_state.menu),
+                default_index=['Beranda',  'Tentang Tanaman'].index(st.session_state.menu),
                 styles={
                     "container": {
                         "padding": "5!important",
