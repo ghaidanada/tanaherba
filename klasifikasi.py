@@ -88,7 +88,7 @@ def app():
     }
 
     # Load model
-    keras_model = tf.keras.models.load_model('best_model__EfficientnetB0rimpang.keras')
+    keras_model = tf.keras.models.load_model('best_model6augmen__EfficientnetB0rimpang.keras')
 
     # Fungsi prediksi
     def classify_potato_keras(image):
