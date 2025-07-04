@@ -159,5 +159,4 @@ def app():
     with col_btn[1]:
         if st.button("🔙 Kembali ke Beranda"):
             st.session_state.menu = "Beranda"
-            st.rerun()
-
+            st.rerun()  
