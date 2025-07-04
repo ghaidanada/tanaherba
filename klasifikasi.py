@@ -147,3 +147,6 @@ def app():
         if st.button("🔙 Kembali ke Beranda"):
             st.session_state.menu = "Beranda"
             st.rerun()
+
+if __name__ == "__main__":
+    main()
