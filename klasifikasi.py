@@ -96,15 +96,16 @@ def app():
     keras_model = tf.keras.models.load_model('best_model6augmen__EfficientnetB0rimpang.keras')
 
     def classify_image(image):
-        image = image.resize((224, 224))
-        image = np.array(image)
-        image = preprocess_input(image)
-        image = np.expand_dims(image, axis=0)
-        predictions = keras_model.predict(image)
-        predicted_class_idx = np.argmax(predictions, axis=1)[0]
-        predicted_class = class_names[predicted_class_idx]
-        predicted_prob = predictions[0][predicted_class_idx]
-        return predicted_class, predicted_prob, predictions[0]
+    image = image.convert('RGB')  # Pastikan gambar RGB
+    image = image.resize((224, 224))
+    image = np.array(image).astype('float32')  # Pastikan float32
+    image = preprocess_input(image)
+    image = np.expand_dims(image, axis=0)  # Jadi (1, 224, 224, 3)
+    predictions = keras_model.predict(image)
+    predicted_class_idx = np.argmax(predictions, axis=1)[0]
+    predicted_class = class_names[predicted_class_idx]
+    predicted_prob = predictions[0][predicted_class_idx]
+    return predicted_class, predicted_prob, predictions[0]
 
     ciri_ciri_rimpang = {
     'bengle': 'Rimpang kuning kehijauan, aroma tajam, rasa agak pahit dan pedas.',
