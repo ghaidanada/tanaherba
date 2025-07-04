@@ -139,10 +139,10 @@ def app():
             if predicted_prob >= threshold:
                 st.success("✅ Tanaman Rimpang Terdeteksi")
                 st.markdown(f"""
-                    <div style='background-color:rgba(223, 240, 216, 0.9); padding:15px; border-radius:10px;'>
-                        <h4 style='color:inherit;'>Jenis Tanaman: {predicted_class.capitalize()}</h4>
-                        <p style='color:inherit;'><b>Ciri-ciri:</b> {ciri_ciri_rimpang.get(predicted_class, '-')}</p>
-                        <p style='color:inherit;'><b>Probabilitas:</b> {predicted_prob:.2%}</p>
+                    <div style='background-color:#dff0d8; padding:15px; border-radius:10px;'>
+                        <h4 style='color:#2e6da4;'>Jenis Tanaman: {predicted_class.capitalize()}</h4>
+                        <p><b>Ciri-ciri:</b> {ciri_ciri_rimpang.get(predicted_class, '-')}</p>
+                        <p><b>Probabilitas:</b> {predicted_prob:.2%}</p>
                     </div>
                 """, unsafe_allow_html=True)
             else:
@@ -153,4 +153,4 @@ def app():
     with col_btn[1]:
         if st.button("🔙 Kembali ke Beranda"):
             st.session_state.menu = "Beranda"
-            st.rerun()
+            st.rerun()  
