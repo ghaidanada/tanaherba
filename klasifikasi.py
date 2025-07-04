@@ -4,7 +4,7 @@ import base64
 import os
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras.applications.efficientnet import preprocess_input
+from tensorflow.keras.applications.efficientnet import preprocess_input  # type: ignore
 
 def main():
     st.title("Prediksi Page")
@@ -38,21 +38,21 @@ def app():
     # CSS styling
     st.markdown('''
         <style>
-        .stButton > button {
-            background-color: #4863A0;
-            color: white;
-            border-radius: 8px;
-            padding: 0.5em 1.5em;
-            font-size: 16px;
-            margin-top: 10px;
-            margin-left: 100px;
-        }
+            .stButton > button {
+                background-color: #028e29;
+                color: white;
+                border-radius: 8px;
+                padding: 0.5em 1.5em;
+                font-size: 16px;
+                margin-top: 20px;
+            }
+
             .centered-header {
-            text-align: center;
-            font-size: 16px;
-            margin-bottom: 10px;
-            color: inherit;
-        }
+                text-align: center;
+                font-size: 16px;
+                margin-bottom: 10px;
+                color: inherit;
+            }
 
             @media (prefers-color-scheme: light) {
                 .block-container {
@@ -67,25 +67,13 @@ def app():
                     color: white;
                 }
             }
-            .hasil-box {
-            background-color: #dff0d8;
-            color: black;
-            padding: 15px;
-            border-radius: 10px;
-        }
         </style>
     ''', unsafe_allow_html=True)
 
     # Judul halaman (ditengah dan kecil)
     st.markdown('<h2 class="centered-header" style="margin-top: -40px;">Klasifikasi Tanaman Herbal 🌱</h2>', unsafe_allow_html=True)
 
-    with st.expander("💡 Cara Menggunakan Aplikasi"):
-        st.markdown("""
-        1. Unggah gambar tanaman rimpang.
-        2. Sistem akan menganalisis dan memprediksi jenis rimpang tersebut.
-        3. Hasil klasifikasi dan tingkat kepercayaan ditampilkan secara otomatis.
-        """)
-
+    # Label sesuai model training
     class_names = {
         0: 'bengle',
         1: 'dringo',
@@ -99,12 +87,13 @@ def app():
         9: 'temulawak'
     }
 
+    # Load model
     keras_model = tf.keras.models.load_model('best_model6augmen__EfficientnetB0rimpang.keras')
 
-    def classify_image(image):
-        image = image.convert('RGB')
+    # Fungsi prediksi
+    def classify_potato_keras(image):
         image = image.resize((224, 224))
-        image = np.array(image).astype('float32')
+        image = np.array(image)
         image = preprocess_input(image)
         image = np.expand_dims(image, axis=0)
         predictions = keras_model.predict(image)
@@ -113,50 +102,45 @@ def app():
         predicted_prob = predictions[0][predicted_class_idx]
         return predicted_class, predicted_prob, predictions[0]
 
-    ciri_ciri_rimpang = {
-        'bengle': 'Rimpang kuning kehijauan, aroma tajam, rasa agak pahit dan pedas.',
-        'dringo': 'Rimpang merah jambu, aroma kuat seperti jahe.',
-        'jahe': 'Rimpang bercabang, kulit keras, aroma pedas khas.',
-        'kencur': 'Rimpang kecil, membulat, kulit kecokelatan, aroma tajam.',
-        'kunyit': 'Rimpang jingga terang di dalam, kulit jingga kecoklatan.',
-        'lempuyang': 'Rimpang besar memanjang, bagian dalam kuning pucat.',
-        'lengkuas': 'Rimpang besar berserat, kulit mengkilap, rasa pedas manis.',
-        'temu_hitam': 'Rimpang gelap keunguan, bagian dalam ada pola biru.',
-        'temu_kunci': 'Rimpang ramping, warna cokelat kekuningan.',
-        'temulawak': 'Rimpang besar, luar kuning tua, dalam jingga kecoklatan, aroma tajam.'
-    }
+    # 💡 Petunjuk penggunaan
+    with st.expander("💡 Cara Menggunakan Aplikasi"):
+        st.markdown("""
+        1. **Unggah gambar tanaman rimpang (misalnya: jahe, kunyit, temulawak, dll).**  
+        2. **Model CNN akan menganalisis citra dan memprediksi jenis rimpang tersebut.**  
+        3. **Hasil klasifikasi akan ditampilkan secara langsung lengkap dengan label dan tingkat kepercayaan (probabilitas).**
+        """)
 
-
-    uploaded_file = st.file_uploader("📁 Unggah gambar tanaman rimpang Anda di sini:", type=['jpg', 'jpeg', 'png'])
+    # Upload gambar
+    uploaded_file = st.file_uploader("SSilahkan unggah gambar tanaman rimpang disini", type=['jpg', 'jpeg', 'png'])
 
     col1, col2, col3 = st.columns([1, 3, 1])
-
     with col2:
         if uploaded_file is not None:
             image = Image.open(uploaded_file)
-            predicted_class, predicted_prob, all_probs = classify_image(image)
+            predicted_class, predicted_prob, all_probs = classify_potato_keras(image)
 
+            # Hasil klasifikasi
             st.image(image, caption='Gambar Tanaman Herbal', use_container_width=True)
-
-            threshold = 0.5
-
-            if predicted_prob >= threshold:
-                st.success("✅ Tanaman Rimpang Terdeteksi")
-                st.markdown(f"""
-                    <div style='background-color:#dff0d8; padding:15px; border-radius:10px;'>
-                        <h4 style='color:#2e6da4;'>Jenis Tanaman: {predicted_class.capitalize()}</h4>
-                        <p><b>Ciri-ciri:</b> {ciri_ciri_rimpang.get(predicted_class, '-')}</p>
-                        <p><b>Probabilitas:</b> {predicted_prob:.2%}</p>
-                    </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.error("⚠️ Gambar tidak terdeteksi sebagai salah satu tanaman rimpang dalam sistem. Pastikan gambar jelas dan sesuai.")
+            st.write("Tanaman Herbal Rimpang Jenis:", f"**{predicted_class}**")
+            st.write(f"Probabilitas tertinggi: **{predicted_prob:.4f}**")
 
     # Tombol kembali ke Beranda
+    st.markdown("""
+        <style>
+        div.stButton > button {
+            background-color: #4863A0;
+            color: white;
+            border-radius: 8px;
+            padding: 0.5em 1.5em;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-left: 100px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
     col_btn = st.columns(3)
     with col_btn[1]:
         if st.button("🔙 Kembali ke Beranda"):
             st.session_state.menu = "Beranda"
             st.rerun()
-
-
