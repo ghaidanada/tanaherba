@@ -14,13 +14,11 @@ if __name__ == "__main__":
     main()
 
 def app():
-    # Fungsi untuk membaca gambar sebagai base64
     def get_base64_of_bin_file(bin_file):
         with open(bin_file, 'rb') as f:
             data = f.read()
         return base64.b64encode(data).decode()
 
-    # Header logo
     logo_path = "tanaherba.png"
     if os.path.exists(logo_path):
         logo_base64 = get_base64_of_bin_file(logo_path)
@@ -35,7 +33,6 @@ def app():
     else:
         st.title("TanaHerba")
 
-    # CSS styling
     st.markdown('''
         <style>
         .stButton > button {
@@ -65,13 +62,23 @@ def app():
                 color: white;
             }
         }
+        .hasil-box {
+            background-color: #dff0d8;
+            padding: 15px;
+            border-radius: 10px;
+            color: black;
+        }
+        @media (prefers-color-scheme: dark) {
+            .hasil-box {
+                background-color: #2d3e2d;
+                color: white;
+            }
+        }
         </style>
     ''', unsafe_allow_html=True)
 
-    # Judul halaman
     st.markdown('<h2 class="centered-header" style="margin-top: -40px;">Klasifikasi Tanaman Herbal 🌱</h2>', unsafe_allow_html=True)
 
-    # Petunjuk
     with st.expander("💡 Cara Menggunakan Aplikasi"):
         st.markdown("""
         1. Unggah gambar tanaman rimpang.
@@ -79,7 +86,6 @@ def app():
         3. Hasil klasifikasi dan tingkat kepercayaan ditampilkan secara otomatis.
         """)
 
-    # Label
     class_names = {
         0: 'bengle',
         1: 'dringo',
@@ -93,10 +99,8 @@ def app():
         9: 'temulawak'
     }
 
-    # Load model
     keras_model = tf.keras.models.load_model('best_model6augmen__EfficientnetB0rimpang.keras')
 
-    # Fungsi klasifikasi
     def classify_image(image):
         image = image.convert('RGB')
         image = image.resize((224, 224))
@@ -109,7 +113,6 @@ def app():
         predicted_prob = predictions[0][predicted_class_idx]
         return predicted_class, predicted_prob, predictions[0]
 
-    # Ciri-ciri singkat
     ciri_ciri_rimpang = {
         'bengle': 'Rimpang kuning kehijauan, aroma tajam, rasa agak pahit dan pedas.',
         'dringo': 'Rimpang merah jambu, aroma kuat seperti jahe.',
@@ -123,7 +126,6 @@ def app():
         'temulawak': 'Rimpang besar, luar kuning tua, dalam jingga kecoklatan, aroma tajam.'
     }
 
-    # Upload
     uploaded_file = st.file_uploader("📁 Unggah gambar tanaman rimpang Anda di sini:", type=['jpg', 'jpeg', 'png'])
 
     col1, col2, col3 = st.columns([1, 3, 1])
@@ -139,8 +141,8 @@ def app():
             if predicted_prob >= threshold:
                 st.success("✅ Tanaman Rimpang Terdeteksi")
                 st.markdown(f"""
-                    <div style='background-color:#dff0d8; padding:15px; border-radius:10px;'>
-                        <h4 style='color:#2e6da4;'>Jenis Tanaman: {predicted_class.capitalize()}</h4>
+                    <div class='hasil-box'>
+                        <h4>Jenis Tanaman: {predicted_class.capitalize()}</h4>
                         <p><b>Ciri-ciri:</b> {ciri_ciri_rimpang.get(predicted_class, '-')}</p>
                         <p><b>Probabilitas:</b> {predicted_prob:.2%}</p>
                     </div>
@@ -148,10 +150,8 @@ def app():
             else:
                 st.error("⚠️ Gambar tidak terdeteksi sebagai salah satu tanaman rimpang dalam sistem. Pastikan gambar jelas dan sesuai.")
 
-    # Tombol kembali
     col_btn = st.columns(3)
     with col_btn[1]:
         if st.button("🔙 Kembali ke Beranda"):
             st.session_state.menu = "Beranda"
             st.rerun()
-
