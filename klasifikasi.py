@@ -67,6 +67,12 @@ def app():
                     color: white;
                 }
             }
+            .hasil-box {
+            background-color: #dff0d8;
+            color: black;
+            padding: 15px;
+            border-radius: 10px;
+        }
         </style>
     ''', unsafe_allow_html=True)
 
@@ -93,11 +99,12 @@ def app():
         9: 'temulawak'
     }
 
-    keras_model = tf.keras.models.load_model('best_model__EfficientnetB0rimpang.keras')
+    keras_model = tf.keras.models.load_model('best_model6augmen__EfficientnetB0rimpang.keras')
 
     def classify_image(image):
+        image = image.convert('RGB')
         image = image.resize((224, 224))
-        image = np.array(image)
+        image = np.array(image).astype('float32')
         image = preprocess_input(image)
         image = np.expand_dims(image, axis=0)
         predictions = keras_model.predict(image)
@@ -107,17 +114,19 @@ def app():
         return predicted_class, predicted_prob, predictions[0]
 
     ciri_ciri_rimpang = {
-    'bengle': 'Rimpang kuning kehijauan, aroma tajam, rasa agak pahit dan pedas.',
-    'dringo': 'Rimpang merah jambu, aroma kuat seperti jahe.',
-    'jahe': 'Rimpang bercabang, kulit keras, aroma pedas khas.',
-    'kencur': 'Rimpang kecil, membulat, kulit kecokelatan, aroma tajam.',
-    'kunyit': 'Rimpang jingga terang di dalam, kulit jingga kecoklatan.',
-    'lempuyang': 'Rimpang besar memanjang, bagian dalam kuning pucat.',
-    'lengkuas': 'Rimpang besar berserat, kulit mengkilap, rasa pedas manis.',
-    'temu_hitam': 'Rimpang gelap keunguan, bagian dalam ada pola biru.',
-    'temu_kunci': 'Rimpang ramping, warna cokelat kekuningan.',
-    'temulawak': 'Rimpang besar, luar kuning tua, dalam jingga kecoklatan, aroma tajam.'
-}
+        'bengle': 'Rimpang kuning kehijauan, aroma tajam, rasa agak pahit dan pedas.',
+        'dringo': 'Rimpang merah jambu, aroma kuat seperti jahe.',
+        'jahe': 'Rimpang bercabang, kulit keras, aroma pedas khas.',
+        'kencur': 'Rimpang kecil, membulat, kulit kecokelatan, aroma tajam.',
+        'kunyit': 'Rimpang jingga terang di dalam, kulit jingga kecoklatan.',
+        'lempuyang': 'Rimpang besar memanjang, bagian dalam kuning pucat.',
+        'lengkuas': 'Rimpang besar berserat, kulit mengkilap, rasa pedas manis.',
+        'temu_hitam': 'Rimpang gelap keunguan, bagian dalam ada pola biru.',
+        'temu_kunci': 'Rimpang ramping, warna cokelat kekuningan.',
+        'temulawak': 'Rimpang besar, luar kuning tua, dalam jingga kecoklatan, aroma tajam.'
+    }
+
+
     uploaded_file = st.file_uploader("📁 Unggah gambar tanaman rimpang Anda di sini:", type=['jpg', 'jpeg', 'png'])
 
     col1, col2, col3 = st.columns([1, 3, 1])
