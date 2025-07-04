@@ -6,13 +6,6 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.keras.applications.efficientnet import preprocess_input
 
-def main():
-    st.title("Prediksi Page")
-    st.write("Welcome to the Prediksi Page.")
-
-if __name__ == "__main__":
-    main()
-
 def app():
     # Fungsi untuk membaca gambar sebagai base64
     def get_base64_of_bin_file(bin_file):
@@ -153,4 +146,4 @@ def app():
     with col_btn[1]:
         if st.button("🔙 Kembali ke Beranda"):
             st.session_state.menu = "Beranda"
-            st.rerun()  
+            st.rerun()
