@@ -93,7 +93,7 @@ def app():
         9: 'temulawak'
     }
 
-    keras_model = tf.keras.models.load_model('best_model5augmen__EfficientnetB0rimpang.keras')
+    keras_model = tf.keras.models.load_model('best_model6augmen__EfficientnetB0rimpang.keras')
 
     def classify_image(image):
         image = image.resize((224, 224))
