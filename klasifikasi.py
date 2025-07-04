@@ -47,32 +47,31 @@ def app():
             margin-top: 10px;
             margin-left: 100px;
         }
-            .centered-header {
+        .centered-header {
             text-align: center;
             font-size: 16px;
             margin-bottom: 10px;
             color: inherit;
         }
-
-            @media (prefers-color-scheme: light) {
-                .block-container {
-                    background-color: rgba(255, 255, 255, 0.95);
-                    color: black;
-                }
+        @media (prefers-color-scheme: light) {
+            .block-container {
+                background-color: rgba(255, 255, 255, 0.95);
+                color: black;
             }
-
-            @media (prefers-color-scheme: dark) {
-                .block-container {
-                    background-color: rgba(30, 30, 30, 0.95);
-                    color: white;
-                }
+        }
+        @media (prefers-color-scheme: dark) {
+            .block-container {
+                background-color: rgba(30, 30, 30, 0.95);
+                color: white;
             }
+        }
         </style>
     ''', unsafe_allow_html=True)
 
-    # Judul halaman (ditengah dan kecil)
+    # Judul halaman
     st.markdown('<h2 class="centered-header" style="margin-top: -40px;">Klasifikasi Tanaman Herbal 🌱</h2>', unsafe_allow_html=True)
 
+    # Petunjuk
     with st.expander("💡 Cara Menggunakan Aplikasi"):
         st.markdown("""
         1. Unggah gambar tanaman rimpang.
@@ -80,6 +79,7 @@ def app():
         3. Hasil klasifikasi dan tingkat kepercayaan ditampilkan secara otomatis.
         """)
 
+    # Label
     class_names = {
         0: 'bengle',
         1: 'dringo',
@@ -93,32 +93,37 @@ def app():
         9: 'temulawak'
     }
 
+    # Load model
     keras_model = tf.keras.models.load_model('best_model6augmen__EfficientnetB0rimpang.keras')
 
+    # Fungsi klasifikasi
     def classify_image(image):
-    image = image.convert('RGB')  # Pastikan gambar RGB
-    image = image.resize((224, 224))
-    image = np.array(image).astype('float32')  # Pastikan float32
-    image = preprocess_input(image)
-    image = np.expand_dims(image, axis=0)  # Jadi (1, 224, 224, 3)
-    predictions = keras_model.predict(image)
-    predicted_class_idx = np.argmax(predictions, axis=1)[0]
-    predicted_class = class_names[predicted_class_idx]
-    predicted_prob = predictions[0][predicted_class_idx]
-    return predicted_class, predicted_prob, predictions[0]
+        image = image.convert('RGB')
+        image = image.resize((224, 224))
+        image = np.array(image).astype('float32')
+        image = preprocess_input(image)
+        image = np.expand_dims(image, axis=0)
+        predictions = keras_model.predict(image)
+        predicted_class_idx = np.argmax(predictions, axis=1)[0]
+        predicted_class = class_names[predicted_class_idx]
+        predicted_prob = predictions[0][predicted_class_idx]
+        return predicted_class, predicted_prob, predictions[0]
 
+    # Ciri-ciri singkat
     ciri_ciri_rimpang = {
-    'bengle': 'Rimpang kuning kehijauan, aroma tajam, rasa agak pahit dan pedas.',
-    'dringo': 'Rimpang merah jambu, aroma kuat seperti jahe.',
-    'jahe': 'Rimpang bercabang, kulit keras, aroma pedas khas.',
-    'kencur': 'Rimpang kecil, membulat, kulit kecokelatan, aroma tajam.',
-    'kunyit': 'Rimpang jingga terang di dalam, kulit jingga kecoklatan.',
-    'lempuyang': 'Rimpang besar memanjang, bagian dalam kuning pucat.',
-    'lengkuas': 'Rimpang besar berserat, kulit mengkilap, rasa pedas manis.',
-    'temu_hitam': 'Rimpang gelap keunguan, bagian dalam ada pola biru.',
-    'temu_kunci': 'Rimpang ramping, warna cokelat kekuningan.',
-    'temulawak': 'Rimpang besar, luar kuning tua, dalam jingga kecoklatan, aroma tajam.'
-}
+        'bengle': 'Rimpang kuning kehijauan, aroma tajam, rasa agak pahit dan pedas.',
+        'dringo': 'Rimpang merah jambu, aroma kuat seperti jahe.',
+        'jahe': 'Rimpang bercabang, kulit keras, aroma pedas khas.',
+        'kencur': 'Rimpang kecil, membulat, kulit kecokelatan, aroma tajam.',
+        'kunyit': 'Rimpang jingga terang di dalam, kulit jingga kecoklatan.',
+        'lempuyang': 'Rimpang besar memanjang, bagian dalam kuning pucat.',
+        'lengkuas': 'Rimpang besar berserat, kulit mengkilap, rasa pedas manis.',
+        'temu_hitam': 'Rimpang gelap keunguan, bagian dalam ada pola biru.',
+        'temu_kunci': 'Rimpang ramping, warna cokelat kekuningan.',
+        'temulawak': 'Rimpang besar, luar kuning tua, dalam jingga kecoklatan, aroma tajam.'
+    }
+
+    # Upload
     uploaded_file = st.file_uploader("📁 Unggah gambar tanaman rimpang Anda di sini:", type=['jpg', 'jpeg', 'png'])
 
     col1, col2, col3 = st.columns([1, 3, 1])
@@ -131,7 +136,6 @@ def app():
             st.image(image, caption='Gambar Tanaman Herbal', use_container_width=True)
 
             threshold = 0.5
-
             if predicted_prob >= threshold:
                 st.success("✅ Tanaman Rimpang Terdeteksi")
                 st.markdown(f"""
@@ -144,11 +148,10 @@ def app():
             else:
                 st.error("⚠️ Gambar tidak terdeteksi sebagai salah satu tanaman rimpang dalam sistem. Pastikan gambar jelas dan sesuai.")
 
-    # Tombol kembali ke Beranda
+    # Tombol kembali
     col_btn = st.columns(3)
     with col_btn[1]:
         if st.button("🔙 Kembali ke Beranda"):
             st.session_state.menu = "Beranda"
             st.rerun()
-
 
